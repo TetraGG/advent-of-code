@@ -1,5 +1,5 @@
 CC=gcc
-LDFLAGS=-march=native -nostdlib -static
+LDFLAGS=-march=native -znoexecstack -no-pie
 
 BIN=1
 OBJ=%.o%$(BIN)
