@@ -1,0 +1,5 @@
+### Assembler template
+*.exe
+*.o
+*.obj
+*.bc
