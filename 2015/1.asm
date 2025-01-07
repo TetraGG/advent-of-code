@@ -13,7 +13,6 @@ extern printf
 global main
 
 main:
-open:
     mov     rax, 0x2
     lea     rdi, input_file
     xor     rsi, rsi
@@ -24,8 +23,12 @@ open:
     js      exit
 ; rbx = fd
     mov     rbx, rax
-; r12 = res
+; r12 = n final
     xor     r12, r12
+; r13 = current pos
+    xor     r13, r13
+; r13 = pos final
+    xor     r14, r14
 
 read_loop:
     xor     rax, rax
@@ -47,11 +50,20 @@ read_char:
     jmp     read_end
 read_dec:
     dec     r12
-    jmp     read_end
+    jmp     read_pos
 read_incr:
     inc     r12
+read_pos:
+    test    r14, r14
+    jnz     read_end
+    inc     r12
+    test    r12, r12
+    jz      set_position
+read_pos_end:
+    dec     r12
 read_end:
     inc     rcx
+    inc     r13
     cmp     rax,  rcx
     je      read_loop
     jmp     read_char
@@ -66,9 +78,18 @@ print:
     mov     rsi, r12
     mov     rdi, print_int
     call    printf
+    xor     rax, rax
+    mov     rsi, r14
+    mov     rdi, print_int
+    call    printf
 
 success:
     mov     rdi, 0x0
 exit:
     mov     rax, 0x3c
     syscall
+
+set_position:
+    mov     r14, r13
+    inc     r14
+    jmp     read_pos_end
